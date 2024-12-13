@@ -77,7 +77,7 @@ mod tests {
     fn test_missing_file() {
         let file_path = "Crime_Data_from_2020_to_Present_20241204.csv"; 
         let result = read_theft_data(file_path);
-        assert!(result.is_ok(), "This test is expected to fail because the file does not exist");
+        assert!(result.is_ok(), "Expected to fail if the file does not exist");
     }
     
     #[test]
