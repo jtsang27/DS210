@@ -65,3 +65,35 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs::File;
+    use std::io::Write;
+    use std::env::temp_dir;
+
+    #[test]
+    fn test_missing_file() {
+        let file_path = "Crime_Data_from_2020_to_Present_20241204.csv"; 
+        let result = read_theft_data(file_path);
+        assert!(result.is_ok(), "This test is expected to fail because the file does not exist");
+    }
+    
+    #[test]
+    fn test_malformed_data() {
+        let mut file_path = std::env::temp_dir();
+        file_path.push("malformed_test.csv");
+        let mut file = File::create(&file_path).unwrap();
+        writeln!(
+            file,
+            "area,crime_desc,crime_date\n\
+            Area1,Theft,2023-01-01\n\
+            null row\n\
+            Area2,Burglary,2023-01-02"
+        )
+        .unwrap();
+        let result = read_theft_data(file_path.to_str().unwrap());
+        assert!(result.is_ok(), "Error for malformed data, but got {:?}", result);
+    }
+}
